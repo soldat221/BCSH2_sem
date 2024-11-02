@@ -1,0 +1,29 @@
+﻿<Window x:Class="BCSH2_sem.Views.GameView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BCSH2_sem.Views"
+        mc:Ignorable="d"
+        Title="GameView" Height="450" Width="800">
+    <Grid DataContext="{Binding GameViewModel}">
+        <StackPanel>
+            <ListView ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Price" DisplayMemberBinding="{Binding Price}" />
+                        <GridViewColumn Header="Genre" DisplayMemberBinding="{Binding Genre}" />
+                        <GridViewColumn Header="Average Rating" DisplayMemberBinding="{Binding AverageRating}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <TextBox Text="{Binding NewGameName}"/>
+            <TextBox Text="{Binding NewGamePrice}"/>
+            <TextBox Text="{Binding NewGameGenre}"/>
+            <TextBox Text="{Binding NewGameURL}"/>
+            <Button Command="{Binding AddGameCommand}" Content="Add Game"/>
+            <Button Command="{Binding UpdateGameCommand}" Content="Update Game" IsEnabled="{Binding SelectedGame}"/>
+        </StackPanel>
+    </Grid>
+</Window>

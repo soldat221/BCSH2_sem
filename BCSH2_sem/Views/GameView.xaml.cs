@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -6,20 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BCSH2_sem
+namespace BCSH2_sem.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interakční logika pro GameView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class GameView : Window
     {
-        public MainWindow()
+        public GameView()
         {
             InitializeComponent();
-            DataContext = new BCSH2_sem.ViewModels.MainViewModel();
         }
     }
 }
