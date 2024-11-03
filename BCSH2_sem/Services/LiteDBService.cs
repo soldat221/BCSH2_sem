@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace BCSH2_sem.Services
 {
@@ -27,34 +28,21 @@ namespace BCSH2_sem.Services
 
         public void DeleteGame(Guid gameId) => _db.GetCollection<Game>("games").Delete(gameId);
 
-        public void InsertReview(Review review)
-        {
-            using var db = new LiteDatabase(_connectionString);
-            db.GetCollection<Review>("reviews").Insert(review);
-        }
+        public List<Review> GetAllReviews() => _db.GetCollection<Review>("reviews").FindAll().ToList();
 
-        public List<Review> GetReviews()
-        {
-            using var db = new LiteDatabase(_connectionString);
-            return db.GetCollection<Review>("reviews").FindAll().ToList();
-        }
+        public void AddReview(Review review) => _db.GetCollection<Review>("reviews").Insert(review);
 
-        public void InsertReviewer(Reviewer reviewer)
-        {
-            using var db = new LiteDatabase(_connectionString);
-            db.GetCollection<Reviewer>("reviewers").Insert(reviewer);
-        }
+        public void UpdateReview(Review review) => _db.GetCollection<Review>("reviews").Update(review);
 
-        public List<Reviewer> GetReviewers()
-        {
-            using var db = new LiteDatabase(_connectionString);
-            return db.GetCollection<Reviewer>("reviewers").FindAll().ToList();
-        }
+        public void DeleteReview(Guid reviewId) => _db.GetCollection<Review>("reviews").Delete(reviewId);
 
-        public void UpdateReviewer(Reviewer reviewer)
-        {
-            using var db = new LiteDatabase(_connectionString);
-            db.GetCollection<Reviewer>("reviewers").Update(reviewer);
-        }
+        public List<Reviewer> GetAllReviewers() => _db.GetCollection<Reviewer>("reviewers").FindAll().ToList();
+
+        public void AddReviewer(Reviewer reviewer) => _db.GetCollection<Reviewer>("reviewers").Insert(reviewer);
+
+        public void UpdateReviewer(Reviewer reviewer) => _db.GetCollection<Reviewer>("reviewers").Update(reviewer);
+
+        public void DeleteReviewer(Guid reviewerId) => _db.GetCollection<Reviewer>("reviewers").Delete(reviewerId);
+
     }
 }

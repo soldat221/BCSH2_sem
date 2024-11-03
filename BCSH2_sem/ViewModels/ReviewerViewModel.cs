@@ -7,43 +7,76 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace BCSH2_sem.ViewModels
 {
     public class ReviewerViewModel : INotifyPropertyChanged
     {
-        private LiteDBService _dbService = new LiteDBService();
-        public ObservableCollection<Reviewer> Reviewers { get; set; } = new ObservableCollection<Reviewer>();
+        private LiteDBService _database;
+        private Reviewer _selectedReviewer;
 
-        public Reviewer SelectedReviewer { get; set; }
-        public string NewReviewerName { get; set; }
+        public ObservableCollection<Reviewer> Reviewers { get; set; }
 
-        public RelayCommand AddReviewerCommand { get; }
+        public Reviewer SelectedReviewer
+        {
+            get => _selectedReviewer;
+            set
+            {
+                _selectedReviewer = value;
+                OnPropertyChanged(nameof(SelectedReviewer));
+                (UpdateReviewerCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                (DeleteReviewerCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public ICommand AddReviewerCommand { get; }
+        public ICommand UpdateReviewerCommand { get; }
+        public ICommand DeleteReviewerCommand { get; }
 
         public ReviewerViewModel()
         {
-            AddReviewerCommand = new RelayCommand(AddReviewer);
-            LoadReviewers();
-        }
+            _database = new LiteDBService();
+            Reviewers = new ObservableCollection<Reviewer>(_database.GetAllReviewers());
 
-        private void LoadReviewers()
-        {
-            Reviewers.Clear();
-            foreach (var reviewer in _dbService.GetReviewers())
-            {
-                reviewer.ReviewCount = _dbService.GetReviews().Count(r => r.Reviewer.Id == reviewer.Id);
-                Reviewers.Add(reviewer);
-            }
+            AddReviewerCommand = new RelayCommand(AddReviewer);
+            UpdateReviewerCommand = new RelayCommand(UpdateReviewer, () => SelectedReviewer != null);
+            DeleteReviewerCommand = new RelayCommand(DeleteReviewer, () => SelectedReviewer != null);
         }
 
         private void AddReviewer()
         {
-            var newReviewer = new Reviewer(NewReviewerName);
-            _dbService.InsertReviewer(newReviewer);
-            LoadReviewers();
+            var newReviewer = new Reviewer("New Reviewer");
+            _database.AddReviewer(newReviewer);
+            Reviewers.Add(newReviewer);
+            SelectedReviewer = newReviewer;
+        }
+
+        private void UpdateReviewer()
+        {
+            if (SelectedReviewer != null)
+            {
+                _database.UpdateReviewer(SelectedReviewer);
+                var index = Reviewers.IndexOf(SelectedReviewer);
+                Reviewers[index] = SelectedReviewer;
+                OnPropertyChanged(nameof(Reviewers));
+            }
+        }
+
+        private void DeleteReviewer()
+        {
+            if (SelectedReviewer != null)
+            {
+                _database.DeleteReviewer(SelectedReviewer.Id);
+                Reviewers.Remove(SelectedReviewer);
+                SelectedReviewer = null;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

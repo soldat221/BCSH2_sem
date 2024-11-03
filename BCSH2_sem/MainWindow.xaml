@@ -45,8 +45,9 @@
             <!-- Tab pro recenze -->
             <TabItem Header="Reviews">
                 <StackPanel>
-                    <DataGrid ItemsSource="{Binding ReviewViewModel.Reviews}" SelectedItem="{Binding ReviewViewModel.SelectedReview}" 
-                              AutoGenerateColumns="False" MaxHeight="200">
+                    <DataGrid ItemsSource="{Binding ReviewViewModel.Reviews}" 
+                      SelectedItem="{Binding ReviewViewModel.SelectedReview, Mode=TwoWay}" 
+                      AutoGenerateColumns="False" MaxHeight="200">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Reviewer" Binding="{Binding Reviewer.Name}" Width="*"/>
                             <DataGridTextColumn Header="Game" Binding="{Binding Game.Name}" Width="*"/>
@@ -55,29 +56,44 @@
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <ComboBox ItemsSource="{Binding ReviewerViewModel.Reviewers}" SelectedItem="{Binding ReviewViewModel.SelectedReviewer}" 
-                              DisplayMemberPath="Name"/>
-                    <ComboBox ItemsSource="{Binding GameViewModel.Games}" SelectedItem="{Binding ReviewViewModel.SelectedGame}" 
-                              DisplayMemberPath="Name"/>
-                    <TextBox Text="{Binding ReviewViewModel.NewReviewStars}"/>
-                    <TextBox Text="{Binding ReviewViewModel.NewReviewContent}"/>
+                    <Label Content="Reviewer"/>
+                    <ComboBox ItemsSource="{Binding ReviewViewModel.Reviewers}" 
+                      SelectedItem="{Binding ReviewViewModel.SelectedReview.Reviewer, Mode=TwoWay}"
+                      DisplayMemberPath="Name"/>
+
+                    <Label Content="Game"/>
+                    <ComboBox ItemsSource="{Binding ReviewViewModel.Games}" 
+                      SelectedItem="{Binding ReviewViewModel.SelectedReview.Game, Mode=TwoWay}"
+                      DisplayMemberPath="Name"/>
+
+                    <Label Content="Stars"/>
+                    <TextBox Text="{Binding ReviewViewModel.SelectedReview.Stars, Mode=TwoWay}"/>
+                    <Label Content="Content"/>
+                    <TextBox Text="{Binding ReviewViewModel.SelectedReview.Content, Mode=TwoWay}"/>
+
                     <Button Command="{Binding ReviewViewModel.AddReviewCommand}" Content="Add Review"/>
+                    <Button Command="{Binding ReviewViewModel.UpdateReviewCommand}" Content="Update Review"/>
+                    <Button Command="{Binding ReviewViewModel.DeleteReviewCommand}" Content="Delete Review"/>
                 </StackPanel>
             </TabItem>
 
             <!-- Tab pro recenzenty -->
             <TabItem Header="Reviewers">
                 <StackPanel>
-                    <DataGrid ItemsSource="{Binding ReviewerViewModel.Reviewers}" SelectedItem="{Binding ReviewerViewModel.SelectedReviewer}" 
+                    <DataGrid ItemsSource="{Binding ReviewerViewModel.Reviewers}" 
+                              SelectedItem="{Binding ReviewerViewModel.SelectedReviewer, Mode=TwoWay}" 
                               AutoGenerateColumns="False" MaxHeight="200">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="Review Count" Binding="{Binding ReviewCount}" Width="*"/>
+                            <DataGridTextColumn Header="Reviewer Name" Binding="{Binding Name}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <TextBox Text="{Binding ReviewerViewModel.NewReviewerName}"/>
+                    <Label Content="Reviewer Name"/>
+                    <TextBox Text="{Binding ReviewerViewModel.SelectedReviewer.Name, Mode=TwoWay}"/>
+
                     <Button Command="{Binding ReviewerViewModel.AddReviewerCommand}" Content="Add Reviewer"/>
+                    <Button Command="{Binding ReviewerViewModel.UpdateReviewerCommand}" Content="Update Reviewer"/>
+                    <Button Command="{Binding ReviewerViewModel.DeleteReviewerCommand}" Content="Delete Reviewer"/>
                 </StackPanel>
             </TabItem>
 
