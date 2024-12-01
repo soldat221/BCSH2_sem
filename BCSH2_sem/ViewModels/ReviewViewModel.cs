@@ -14,6 +14,7 @@ namespace BCSH2_sem.ViewModels
     public class ReviewViewModel : INotifyPropertyChanged
     {
         private LiteDBService _database;
+        private ReviewerViewModel _reviewerViewModel;
         private Review _selectedReview;
 
         public ObservableCollection<Review> Reviews { get; set; }
@@ -26,7 +27,17 @@ namespace BCSH2_sem.ViewModels
             set
             {
                 _selectedReview = value;
-                OnPropertyChanged(nameof(SelectedReview));
+
+                if (_selectedReview != null)
+                {
+                    _selectedReview.Game = Games.FirstOrDefault(g => g.Id == _selectedReview.Game.Id);
+                    _selectedReview.Reviewer = Reviewers.FirstOrDefault(r => r.Id == _selectedReview.Reviewer.Id);
+
+                    OnPropertyChanged(nameof(SelectedReview));
+                    OnPropertyChanged(nameof(SelectedReview.Game));
+                    OnPropertyChanged(nameof(SelectedReview.Reviewer));
+                }
+
                 (UpdateReviewCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 (DeleteReviewCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
@@ -36,12 +47,15 @@ namespace BCSH2_sem.ViewModels
         public ICommand UpdateReviewCommand { get; }
         public ICommand DeleteReviewCommand { get; }
 
-        public ReviewViewModel()
+        public ReviewViewModel(ReviewerViewModel reviewerViewModel)
         {
             _database = new LiteDBService();
+            _reviewerViewModel = reviewerViewModel;
             Reviews = new ObservableCollection<Review>(_database.GetAllReviews());
             Games = new ObservableCollection<Game>(_database.GetAllGames());
             Reviewers = new ObservableCollection<Reviewer>(_database.GetAllReviewers());
+
+            UpdateReviewCounts();
 
             AddReviewCommand = new RelayCommand(AddReview);
             UpdateReviewCommand = new RelayCommand(UpdateReview, () => SelectedReview != null);
@@ -50,9 +64,10 @@ namespace BCSH2_sem.ViewModels
 
         private void AddReview()
         {
-            var newReview = new Review(new Reviewer("Reviewer Name"), new Game("Game Name", 0, "Genre", "URL"), 0, "Content");
+            var newReview = new Review(Reviewers.FirstOrDefault(), Games.FirstOrDefault(), 0, "New Content");
             _database.AddReview(newReview);
             Reviews.Add(newReview);
+            UpdateReviewCounts();
             SelectedReview = newReview;
         }
 
@@ -63,6 +78,7 @@ namespace BCSH2_sem.ViewModels
                 _database.UpdateReview(SelectedReview);
                 var index = Reviews.IndexOf(SelectedReview);
                 Reviews[index] = SelectedReview;
+                UpdateReviewCounts();
                 OnPropertyChanged(nameof(Reviews));
             }
         }
@@ -73,8 +89,14 @@ namespace BCSH2_sem.ViewModels
             {
                 _database.DeleteReview(SelectedReview.Id);
                 Reviews.Remove(SelectedReview);
+                UpdateReviewCounts();
                 SelectedReview = null;
             }
+        }
+
+        private void UpdateReviewCounts()
+        {
+            _reviewerViewModel.UpdateReviewCounts(Reviews);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

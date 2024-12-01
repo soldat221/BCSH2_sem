@@ -85,6 +85,7 @@
                               AutoGenerateColumns="False" MaxHeight="200">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Reviewer Name" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Reviews Count" Binding="{Binding ReviewCount}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
 

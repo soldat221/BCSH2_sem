@@ -8,15 +8,15 @@ namespace BCSH2_sem.ViewModels
 {
     public class MainViewModel
     {
-        public GameViewModel GameViewModel { get; set; }
-        public ReviewViewModel ReviewViewModel { get; set; }
-        public ReviewerViewModel ReviewerViewModel { get; set; }
+        public GameViewModel GameViewModel { get; }
+        public ReviewViewModel ReviewViewModel { get; }
+        public ReviewerViewModel ReviewerViewModel { get; }
 
         public MainViewModel()
         {
-            GameViewModel = new GameViewModel();
-            ReviewViewModel = new ReviewViewModel();
             ReviewerViewModel = new ReviewerViewModel();
+            ReviewViewModel = new ReviewViewModel(ReviewerViewModel);
+            GameViewModel = new GameViewModel();
         }
     }
 }

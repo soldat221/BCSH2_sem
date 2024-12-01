@@ -17,7 +17,6 @@ namespace BCSH2_sem.ViewModels
         private Reviewer _selectedReviewer;
 
         public ObservableCollection<Reviewer> Reviewers { get; set; }
-
         public Reviewer SelectedReviewer
         {
             get => _selectedReviewer;
@@ -38,10 +37,18 @@ namespace BCSH2_sem.ViewModels
         {
             _database = new LiteDBService();
             Reviewers = new ObservableCollection<Reviewer>(_database.GetAllReviewers());
-
             AddReviewerCommand = new RelayCommand(AddReviewer);
             UpdateReviewerCommand = new RelayCommand(UpdateReviewer, () => SelectedReviewer != null);
             DeleteReviewerCommand = new RelayCommand(DeleteReviewer, () => SelectedReviewer != null);
+        }
+
+        public void UpdateReviewCounts(IEnumerable<Review> reviews)
+        {
+            foreach (var reviewer in Reviewers)
+            {
+                reviewer.ReviewCount = reviews.Count(r => r.Reviewer.Id == reviewer.Id);
+            }
+            OnPropertyChanged(nameof(Reviewers));
         }
 
         private void AddReviewer()
