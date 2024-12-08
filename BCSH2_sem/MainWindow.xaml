@@ -80,7 +80,8 @@
             <!-- Tab pro recenzenty -->
             <TabItem Header="Reviewers">
                 <StackPanel>
-                    <DataGrid ItemsSource="{Binding ReviewerViewModel.Reviewers}" 
+                    <DataGrid x:Name="ReviewerDataGrid"
+                              ItemsSource="{Binding ReviewerViewModel.Reviewers}" 
                               SelectedItem="{Binding ReviewerViewModel.SelectedReviewer, Mode=TwoWay}" 
                               AutoGenerateColumns="False" MaxHeight="200">
                         <DataGrid.Columns>

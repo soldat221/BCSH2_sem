@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using BCSH2_sem.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,6 +21,12 @@ namespace BCSH2_sem
         {
             InitializeComponent();
             DataContext = new BCSH2_sem.ViewModels.MainViewModel();
+            var viewModel = DataContext as MainViewModel;
+
+            if (viewModel != null)
+            {
+                viewModel.ReviewerViewModel.AttachDataGrid(ReviewerDataGrid);
+            }
         }
     }
 }

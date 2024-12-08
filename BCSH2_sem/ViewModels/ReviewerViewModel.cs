@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace BCSH2_sem.ViewModels
@@ -15,6 +16,7 @@ namespace BCSH2_sem.ViewModels
     {
         private LiteDBService _database;
         private Reviewer _selectedReviewer;
+        private DataGrid _dataGrid;
 
         public ObservableCollection<Reviewer> Reviewers { get; set; }
         public Reviewer SelectedReviewer
@@ -42,12 +44,20 @@ namespace BCSH2_sem.ViewModels
             DeleteReviewerCommand = new RelayCommand(DeleteReviewer, () => SelectedReviewer != null);
         }
 
+        public void AttachDataGrid(DataGrid dataGrid)
+        {
+            _dataGrid = dataGrid;
+        }
+
         public void UpdateReviewCounts(IEnumerable<Review> reviews)
         {
             foreach (var reviewer in Reviewers)
             {
                 reviewer.ReviewCount = reviews.Count(r => r.Reviewer.Id == reviewer.Id);
             }
+
+            // refresh DataGridu
+            _dataGrid?.Items.Refresh();
             OnPropertyChanged(nameof(Reviewers));
         }
 
