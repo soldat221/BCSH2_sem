@@ -15,8 +15,8 @@ namespace BCSH2_sem.ViewModels
         public MainViewModel()
         {
             ReviewerViewModel = new ReviewerViewModel();
-            ReviewViewModel = new ReviewViewModel(ReviewerViewModel);
             GameViewModel = new GameViewModel();
+            ReviewViewModel = new ReviewViewModel(ReviewerViewModel, GameViewModel);
         }
     }
 }

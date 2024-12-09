@@ -26,6 +26,7 @@ namespace BCSH2_sem
             if (viewModel != null)
             {
                 viewModel.ReviewerViewModel.AttachDataGrid(ReviewerDataGrid);
+                viewModel.GameViewModel.AttachDataGrid(GameDataGrid);
             }
         }
     }

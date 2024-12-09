@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace BCSH2_sem.ViewModels
@@ -15,6 +16,7 @@ namespace BCSH2_sem.ViewModels
     {
         private LiteDBService _database;
         private Game _selectedGame;
+        private DataGrid _dataGrid;
 
         public ObservableCollection<Game> Games { get; set; }
 
@@ -61,6 +63,24 @@ namespace BCSH2_sem.ViewModels
                 Games[index] = SelectedGame;
                 OnPropertyChanged(nameof(Games));
             }
+        }
+
+        public void AttachDataGrid(DataGrid dataGrid)
+        {
+            _dataGrid = dataGrid;
+        }
+
+        public void UpdateAverageRatings(IEnumerable<Review> reviews)
+        {
+            foreach (var game in Games)
+            {
+                var gameReviews = reviews.Where(r => r.Game.Id == game.Id).ToList();
+                game.AverageRating = gameReviews.Any() ? gameReviews.Average(r => r.Stars) : 0;
+            }
+
+            // Explicitní refresh DataGridu
+            _dataGrid?.Items.Refresh();
+            OnPropertyChanged(nameof(Games));
         }
 
         private void DeleteGame()

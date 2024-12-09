@@ -14,9 +14,10 @@
             <!-- Tab pro hry -->
             <TabItem Header="Games">
                 <StackPanel>
-                    <DataGrid ItemsSource="{Binding GameViewModel.Games}" 
-                              SelectedItem="{Binding GameViewModel.SelectedGame, Mode=TwoWay}" 
-                              AutoGenerateColumns="False" MaxHeight="200">
+                    <DataGrid x:Name="GameDataGrid"
+                            ItemsSource="{Binding GameViewModel.Games}" 
+                            SelectedItem="{Binding GameViewModel.SelectedGame, Mode=TwoWay}" 
+                            AutoGenerateColumns="False" MaxHeight="200">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="*"/>

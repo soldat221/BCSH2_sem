@@ -15,6 +15,7 @@ namespace BCSH2_sem.ViewModels
     {
         private LiteDBService _database;
         private ReviewerViewModel _reviewerViewModel;
+        private GameViewModel _gameViewModel;
         private Review _selectedReview;
 
         public ObservableCollection<Review> Reviews { get; set; }
@@ -47,15 +48,16 @@ namespace BCSH2_sem.ViewModels
         public ICommand UpdateReviewCommand { get; }
         public ICommand DeleteReviewCommand { get; }
 
-        public ReviewViewModel(ReviewerViewModel reviewerViewModel)
+        public ReviewViewModel(ReviewerViewModel reviewerViewModel, GameViewModel gameViewModel)
         {
             _database = new LiteDBService();
             _reviewerViewModel = reviewerViewModel;
+            _gameViewModel = gameViewModel;
             Reviews = new ObservableCollection<Review>(_database.GetAllReviews());
             Games = new ObservableCollection<Game>(_database.GetAllGames());
             Reviewers = new ObservableCollection<Reviewer>(_database.GetAllReviewers());
 
-            UpdateReviewCounts();
+            UpdateRelatedData();
 
             AddReviewCommand = new RelayCommand(AddReview);
             UpdateReviewCommand = new RelayCommand(UpdateReview, () => SelectedReview != null);
@@ -67,7 +69,7 @@ namespace BCSH2_sem.ViewModels
             var newReview = new Review(Reviewers.FirstOrDefault(), Games.FirstOrDefault(), 0, "New Content");
             _database.AddReview(newReview);
             Reviews.Add(newReview);
-            UpdateReviewCounts();
+            UpdateRelatedData();
             SelectedReview = newReview;
         }
 
@@ -78,7 +80,7 @@ namespace BCSH2_sem.ViewModels
                 _database.UpdateReview(SelectedReview);
                 var index = Reviews.IndexOf(SelectedReview);
                 Reviews[index] = SelectedReview;
-                UpdateReviewCounts();
+                UpdateRelatedData();
                 OnPropertyChanged(nameof(Reviews));
             }
         }
@@ -89,14 +91,16 @@ namespace BCSH2_sem.ViewModels
             {
                 _database.DeleteReview(SelectedReview.Id);
                 Reviews.Remove(SelectedReview);
-                UpdateReviewCounts();
+                UpdateRelatedData();
                 SelectedReview = null;
             }
         }
 
-        private void UpdateReviewCounts()
+        private void UpdateRelatedData()
         {
-            _reviewerViewModel.UpdateReviewCounts(Reviews);
+            var reviews = _database.GetAllReviews();
+            _gameViewModel.UpdateAverageRatings(reviews);
+            _reviewerViewModel.UpdateReviewCounts(reviews);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
