@@ -103,6 +103,26 @@ namespace BCSH2_sem.ViewModels
             _reviewerViewModel.UpdateReviewCounts(reviews);
         }
 
+        public void UpdateGameCollection()
+        {
+            Games.Clear();
+            foreach (var game in _gameViewModel.Games)
+            {
+                Games.Add(game);
+            }
+            OnPropertyChanged(nameof(Games));
+        }
+
+        public void UpdateReviewerCollection()
+        {
+            Reviewers.Clear();
+            foreach (var reviewer in _reviewerViewModel.Reviewers)
+            {
+                Reviewers.Add(reviewer);
+            }
+            OnPropertyChanged(nameof(Reviewers));
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

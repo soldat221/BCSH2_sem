@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -19,6 +20,7 @@ namespace BCSH2_sem.ViewModels
         private DataGrid _dataGrid;
 
         public ObservableCollection<Game> Games { get; set; }
+        public event Action GamesUpdated;
 
         public Game SelectedGame
         {
@@ -43,7 +45,12 @@ namespace BCSH2_sem.ViewModels
 
             AddGameCommand = new RelayCommand(AddGame);
             UpdateGameCommand = new RelayCommand(UpdateGame, () => SelectedGame != null);
-            DeleteGameCommand = new RelayCommand(DeleteGame, () => SelectedGame != null);
+            DeleteGameCommand = new RelayCommand(DeleteGame, CanDeleteGame);
+        }
+
+        private void NotifyGamesUpdated()
+        {
+            GamesUpdated?.Invoke();
         }
 
         private void AddGame()
@@ -51,6 +58,7 @@ namespace BCSH2_sem.ViewModels
             var newGame = new Game("New Game", 0, "Genre", "URL");
             _database.AddGame(newGame);
             Games.Add(newGame);
+            NotifyGamesUpdated();
             SelectedGame = newGame;
         }
 
@@ -87,10 +95,27 @@ namespace BCSH2_sem.ViewModels
         {
             if (SelectedGame != null)
             {
+                var reviewsForGame = _database.GetAllReviews().Any(r => r.Game.Id == SelectedGame.Id);
+
+                if (reviewsForGame)
+                {
+                    MessageBox.Show("Cannot delete this game because it has reviews associated with it.", "Delete Game", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 _database.DeleteGame(SelectedGame.Id);
                 Games.Remove(SelectedGame);
+                NotifyGamesUpdated();
                 SelectedGame = null;
             }
+        }
+
+        private bool CanDeleteGame()
+        {
+            if (SelectedGame == null) return false;
+
+            var reviewsForGame = _database.GetAllReviews().Any(r => r.Game.Id == SelectedGame.Id);
+            return !reviewsForGame;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

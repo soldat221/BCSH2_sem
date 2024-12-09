@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -19,6 +20,7 @@ namespace BCSH2_sem.ViewModels
         private DataGrid _dataGrid;
 
         public ObservableCollection<Reviewer> Reviewers { get; set; }
+        public event Action ReviewersUpdated;
         public Reviewer SelectedReviewer
         {
             get => _selectedReviewer;
@@ -41,7 +43,12 @@ namespace BCSH2_sem.ViewModels
             Reviewers = new ObservableCollection<Reviewer>(_database.GetAllReviewers());
             AddReviewerCommand = new RelayCommand(AddReviewer);
             UpdateReviewerCommand = new RelayCommand(UpdateReviewer, () => SelectedReviewer != null);
-            DeleteReviewerCommand = new RelayCommand(DeleteReviewer, () => SelectedReviewer != null);
+            DeleteReviewerCommand = new RelayCommand(DeleteReviewer, CanDeleteReviewer);
+        }
+
+        private void NotifyReviewersUpdated()
+        {
+            ReviewersUpdated?.Invoke();
         }
 
         public void AttachDataGrid(DataGrid dataGrid)
@@ -66,6 +73,7 @@ namespace BCSH2_sem.ViewModels
             var newReviewer = new Reviewer("New Reviewer");
             _database.AddReviewer(newReviewer);
             Reviewers.Add(newReviewer);
+            NotifyReviewersUpdated();
             SelectedReviewer = newReviewer;
         }
 
@@ -84,10 +92,27 @@ namespace BCSH2_sem.ViewModels
         {
             if (SelectedReviewer != null)
             {
+                var reviewsForReviewer = _database.GetAllReviews().Any(r => r.Reviewer.Id == SelectedReviewer.Id);
+
+                if (reviewsForReviewer)
+                {
+                    MessageBox.Show("Cannot delete this reviewer because they have reviews associated with them.", "Delete Reviewer", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 _database.DeleteReviewer(SelectedReviewer.Id);
                 Reviewers.Remove(SelectedReviewer);
+                NotifyReviewersUpdated();
                 SelectedReviewer = null;
             }
+        }
+
+        private bool CanDeleteReviewer()
+        {
+            if (SelectedReviewer == null) return false;
+
+            var reviewsForReviewer = _database.GetAllReviews().Any(r => r.Reviewer.Id == SelectedReviewer.Id);
+            return !reviewsForReviewer;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
