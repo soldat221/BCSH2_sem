@@ -83,7 +83,11 @@ namespace BCSH2_sem.ViewModels
             {
                 _database.UpdateReviewer(SelectedReviewer);
                 var index = Reviewers.IndexOf(SelectedReviewer);
-                Reviewers[index] = SelectedReviewer;
+                try
+                {
+                    Reviewers[index] = SelectedReviewer;
+                }
+                catch { }
                 NotifyReviewersUpdated();
                 OnPropertyChanged(nameof(Reviewers));
             }

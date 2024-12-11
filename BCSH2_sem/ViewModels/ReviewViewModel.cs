@@ -79,7 +79,11 @@ namespace BCSH2_sem.ViewModels
             {
                 _database.UpdateReview(SelectedReview);
                 var index = Reviews.IndexOf(SelectedReview);
-                Reviews[index] = SelectedReview;
+                try 
+                {
+                    Reviews[index] = SelectedReview;
+                } 
+                catch { }
                 UpdateRelatedData();
                 OnPropertyChanged(nameof(Reviews));
             }
