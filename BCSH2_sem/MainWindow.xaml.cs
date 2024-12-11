@@ -1,5 +1,6 @@
 ﻿using BCSH2_sem.ViewModels;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,6 +29,12 @@ namespace BCSH2_sem
                 viewModel.ReviewerViewModel.AttachDataGrid(ReviewerDataGrid);
                 viewModel.GameViewModel.AttachDataGrid(GameDataGrid);
             }
+        }
+
+        private void StarsTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-5]");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

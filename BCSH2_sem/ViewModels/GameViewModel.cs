@@ -69,6 +69,7 @@ namespace BCSH2_sem.ViewModels
                 _database.UpdateGame(SelectedGame);
                 var index = Games.IndexOf(SelectedGame);
                 Games[index] = SelectedGame;
+                NotifyGamesUpdated();
                 OnPropertyChanged(nameof(Games));
             }
         }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BCSH2_sem"
         xmlns:vm="clr-namespace:BCSH2_sem.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="750" Width="800">
 
     <StackPanel>
         <TabControl HorizontalAlignment="Stretch">
@@ -17,7 +17,9 @@
                     <DataGrid x:Name="GameDataGrid"
                             ItemsSource="{Binding GameViewModel.Games}" 
                             SelectedItem="{Binding GameViewModel.SelectedGame, Mode=TwoWay}" 
-                            AutoGenerateColumns="False" MaxHeight="200">
+                            AutoGenerateColumns="False" MaxHeight="200"
+                            IsReadOnly="True"
+                            SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="*"/>
@@ -36,10 +38,8 @@
                     <TextBox Text="{Binding GameViewModel.SelectedGame.URL, Mode=TwoWay}"/>
 
                     <Button Command="{Binding GameViewModel.AddGameCommand}" Content="Add Game"/>
-                    <Button Command="{Binding GameViewModel.UpdateGameCommand}" Content="Update Game"
-                            IsEnabled="{Binding GameViewModel.SelectedGame}"/>
-                    <Button Command="{Binding GameViewModel.DeleteGameCommand}" Content="Delete Game"
-                            IsEnabled="{Binding GameViewModel.SelectedGame}"/>
+                    <Button Command="{Binding GameViewModel.UpdateGameCommand}" Content="Update Game"/>
+                    <Button Command="{Binding GameViewModel.DeleteGameCommand}" Content="Delete Game"/>
                 </StackPanel>
             </TabItem>
 
@@ -48,7 +48,9 @@
                 <StackPanel>
                     <DataGrid ItemsSource="{Binding ReviewViewModel.Reviews}" 
                       SelectedItem="{Binding ReviewViewModel.SelectedReview, Mode=TwoWay}" 
-                      AutoGenerateColumns="False" MaxHeight="200">
+                      AutoGenerateColumns="False" MaxHeight="200"
+                      IsReadOnly="True"
+                      SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Reviewer" Binding="{Binding Reviewer.Name}" Width="*"/>
                             <DataGridTextColumn Header="Game" Binding="{Binding Game.Name}" Width="*"/>
@@ -68,7 +70,7 @@
                       DisplayMemberPath="Name"/>
 
                     <Label Content="Stars"/>
-                    <TextBox Text="{Binding ReviewViewModel.SelectedReview.Stars, Mode=TwoWay}"/>
+                    <TextBox Text="{Binding ReviewViewModel.SelectedReview.Stars, Mode=TwoWay}" PreviewTextInput="StarsTextBox_PreviewTextInput" MaxLength="1"/>
                     <Label Content="Content"/>
                     <TextBox Text="{Binding ReviewViewModel.SelectedReview.Content, Mode=TwoWay}"/>
 
@@ -84,7 +86,9 @@
                     <DataGrid x:Name="ReviewerDataGrid"
                               ItemsSource="{Binding ReviewerViewModel.Reviewers}" 
                               SelectedItem="{Binding ReviewerViewModel.SelectedReviewer, Mode=TwoWay}" 
-                              AutoGenerateColumns="False" MaxHeight="200">
+                              AutoGenerateColumns="False" MaxHeight="200"
+                              IsReadOnly="True"
+                              SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Reviewer Name" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Reviews Count" Binding="{Binding ReviewCount}" Width="*"/>

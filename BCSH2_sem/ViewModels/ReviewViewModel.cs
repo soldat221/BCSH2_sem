@@ -99,8 +99,25 @@ namespace BCSH2_sem.ViewModels
         private void UpdateRelatedData()
         {
             var reviews = _database.GetAllReviews();
+
+            foreach (var review in reviews)
+            {
+                review.Game = _gameViewModel.Games.FirstOrDefault(g => g.Id == review.Game.Id);
+                review.Reviewer = _reviewerViewModel.Reviewers.FirstOrDefault(r => r.Id == review.Reviewer.Id);
+            }
+
+            // Aktualizace datových kolekcí
+            Reviews.Clear();
+            foreach (var review in reviews)
+            {
+                Reviews.Add(review);
+            }
+
             _gameViewModel.UpdateAverageRatings(reviews);
+
             _reviewerViewModel.UpdateReviewCounts(reviews);
+
+            OnPropertyChanged(nameof(Reviews));
         }
 
         public void UpdateGameCollection()
